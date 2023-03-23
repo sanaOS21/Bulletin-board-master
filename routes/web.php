@@ -11,6 +11,21 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+//
+Auth::routes();
+
+// ①誰でも入れる（ログアウト中）
+// middleware=> ミドルウェアを適用している
+Route::group(['middleware' => ['guest']], function () {
+    // namespace=> 毎回指定する手間が省ける
+    //ログイン画面
+    Route::get('/login', '\App\Http\Controllers\Auth\Login\LoginController@login')->name('login');
+    Route::post('/login', '\App\Http\Controllers\Auth\Login\LoginController@login');
+    // 新規登録画面
+    Route::get('/register', '\App\Http\Controllers\Auth\Register\RegisterController@create')->name('register');
+    Route::post('/register', '\App\Http\Controllers\Auth\Register\RegisterController@create');
 });

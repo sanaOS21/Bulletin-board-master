@@ -19,10 +19,11 @@ class LoginController extends Controller
     //ログイン
     public function login(Request $request)
     {
-        // $requst->isMethod('post') 引数に指定した文字列とHTTP動詞が同じか判定
+        // $request->isMethod('post') 引数に指定した文字列とHTTP動詞が同じか判定
         if ($request->isMethod('post')) {
+            // 受け取りたいものを受け取る(only) ※受け取りたくないときexcept
 
-            $date = $request->only('mail', 'password');
+            $date = $request->only('email', 'password');
             // $dateを受け取りDBからユーザを見つけるために使用
             if (Auth::attempt($date)) {
                 return redirect('/top');

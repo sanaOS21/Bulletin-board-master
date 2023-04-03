@@ -12,6 +12,10 @@ use App\Models\Users\User;
 
 class RegisterController extends Controller
 {
+    use RegistersUsers;
+
+    protected $redirectTo = '/login';
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -28,38 +32,36 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function create(Request $request)
+    public function create(array $data)
     {
-        // ↓リクエストメソッドが指定のものか確認【佐藤追記】
-        // dd($request);
-        if ($request->isMethod('post')) {
-            //     //dataメソッドを追加
-            $data = $request->input();
-            // dd($data);
-            $validator = $this->Validator($request->all());
+        return User::create([
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
+    }
 
-            // // dd($validator);
-            //ifでバリデーションの失敗を判定
-            // withInputでold()で入力された値を保存
-            // withErrorsで$errorsへエラーメッセージを保存
-            // redirectで/registerにリダイレクト　という流れ
+    public function register(Request $request)
+    {
+
+        if ($request->isMethod('post')) {
+            $data = $request->input();
+
+            $validator = $this->validator($data);
+
             if ($validator->fails()) {
                 return redirect('/register')
                     ->withErrors($validator)
                     ->withInput();
+            } else {
+                $this->create($data);
+
+                return redirect('added')->with('username', $data['username']);
             }
-            //createメソッドを実行
-            // ここがおかしい
-            $this->create($data);
-            $request->session()->put('username', $data['username']);
-            // ↓ Controllerでwithで名前が出るように指示
-            return redirect('added');
-            // ->with('UserName', $data['username']);
+            //usernameデータも一緒にaddedを表示
         }
         return view('register');
     }
-    // ↓多分、if以外は新規登録画面に戻れ【佐藤追記】
-
     public function added(Request $request)
     {
         return view('added');

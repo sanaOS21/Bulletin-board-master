@@ -10,6 +10,7 @@
 
 <body>
   <form action="{{route('register')}}" method="post">
+    @csrf
     <p>新規登録</p>
     @foreach ($errors->all() as $error)
     <li>{{$error}}</li>
@@ -22,8 +23,8 @@
     <input type="text" name="password" value="{{ old('password')}}"><br>
     <label for="">パスワード確認:</label>
     <input type="text" name="password_confirmation" value="{{ old('password_confirmation')}}">
-    @csrf
     <input type="submit" value="新規登録" onclick="return confirm('登録してよろしいですか。')">
+
   </form>
 
 
